@@ -12,21 +12,7 @@ const server = express()
 
 const io = socketIO(server);
 
-io.sockets.on('connection', function (socket) {
-  // On donne la liste des messages (événement créé du côté client)
-  socket.emit('recupererMessages', messages);
-  // Quand on reçoit un nouveau message
-  socket.on('nouveauMessage', function (mess) {
-      // On l'ajoute au tableau (variable globale commune à tous les clients connectés au serveur)
-      messages.push(mess);
-      // On envoie à tous les clients connectés (sauf celui qui a appelé l'événement) le nouveau message
-      socket.broadcast.emit('recupererNouveauMessage', mess);
-  });
+io.on('connection', function (socket) {
+  socket.emit('faitUneAlerte');
 });
-
-///////////////////
-
-// Notre application écoute sur le port 8080
-app.listen(8080);
-console.log('Live Chat App running at http://localhost:8080/');
 
