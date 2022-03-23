@@ -1,18 +1,42 @@
-'use strict';
+var http    =   require('http');
+var fs      =   require('fs');
 
-const express = require('express');
-const socketIO = require('socket.io');
-
-const PORT = process.env.PORT || 3000;
-const INDEX = '/index.html';
-
-const server = express()
-  .use((req, res) => res.sendFile(INDEX, { root: __dirname }))
-  .listen(PORT, () => console.log(`Listening on ${PORT}`));
-
-const io = socketIO(server);
-
-io.on('connection', function (socket) {
-  socket.emit('faitUneAlerte');
+// Création du serveur
+var app = http.createServer(function (req, res) {
+    // On lit notre fichier tchat.html
+    fs.readFile('./tchat.html', 'utf-8', function(error, content) {
+        res.writeHead(200, {'Content-Type' : 'text/html'});
+        res.end(content);
+    });
 });
 
+// Variables globales
+// Ces variables resteront durant toute la vie du seveur et sont communes pour chaque client (node server.js)
+// Liste des messages de la forme { pseudo : 'Mon pseudo', message : 'Mon message' }
+var messages = [];
+
+//// SOCKET.IO ////
+
+var io      =   require('socket.io');
+
+// Socket.IO écoute maintenant notre application !
+io = io.listen(app); 
+
+// Quand une personne se connecte au serveur
+io.sockets.on('connection', function (socket) {
+    // On donne la liste des messages (événement créé du côté client)
+    socket.emit('recupererMessages', messages);
+    // Quand on reçoit un nouveau message
+    socket.on('nouveauMessage', function (mess) {
+        // On l'ajoute au tableau (variable globale commune à tous les clients connectés au serveur)
+        messages.push(mess);
+        // On envoie à tous les clients connectés (sauf celui qui a appelé l'événement) le nouveau message
+        socket.broadcast.emit('recupererNouveauMessage', mess);
+    });
+});
+
+///////////////////
+
+// Notre application écoute sur le port 8080
+app.listen(8080);
+console.log('Live Chat App running at http://localhost:8080/');
