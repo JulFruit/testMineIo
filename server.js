@@ -19,8 +19,10 @@ io.on('connection', function (socket) {
   socket.emit('recupererMessages', messages);
   // Quand on reçoit un nouveau message
   socket.on('nouveauMessage', function (mess) {
+      console.log("dddddddddd");
+      console.log(mess);
       // On l'ajoute au tableau (variable globale commune à tous les clients connectés au serveur)
-      messages.push(mess);
+      messages[mess.id] = mess.coos
       // On envoie à tous les clients connectés (sauf celui qui a appelé l'événement) le nouveau message
       socket.broadcast.emit('recupererNouveauMessage', mess);
   });
