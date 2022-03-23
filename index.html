@@ -46,20 +46,21 @@
       socket.on('recupererMessages', function (messages) {
       // messages est le tableau contenant tous les messages qui ont été écris sur le serveur
       var html = '';
+      var id = messages.length
       for (var i = 0; i < messages.length; i++)
-        html += '<div class="line"><b>'+messages[i].pseudo+'</b> : '+messages[i].message+'</div>';
+        html += '<div class="line"><b>'+messages[i].pseudo+'</b> : '+messages[i].coos+'</div>';
       document.getElementById('tchat').innerHTML = html;
       });
 
       socket.on('recupererNouveauMessage', function (message) {
-      document.getElementById('tchat').innerHTML += '<div class="line"><b>'+message.pseudo+'</b> : '+message.message+'</div>';
+      document.getElementById('tchat').innerHTML += '<div class="line"><b>'+message.pseudo+'</b> : '+message.coos+'</div>';
       });
       // Quand on veut envoyer un message (on a validé le formulaire)
       function envoiMessage(mess) {
       // On récupère le message
       var message = document.getElementById('message').value;
       // On appelle l'événement se trouvant sur le serveur pour qu'il enregistre le message et qu'il l'envoie à tous les autres clients connectés (sauf nous)
-      socket.emit('nouveauMessage', { 'pseudo' : pseudo, 'message' : message });
+      socket.emit('nouveauMessage', { 'id' : id, 'coos' : coos });
         // On affiche directement notre message dans notre page
         document.getElementById('tchat').innerHTML += '<div class="line"><b>'+pseudo+'</b> : '+message+'</div>';
         // On vide le formulaire
