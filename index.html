@@ -57,6 +57,7 @@
       });
       // Quand on veut envoyer un message (on a validé le formulaire)
       function envoiMessage(mess) {
+      document.getElementById('tchat').innerHTML += '<div class="line"><b>'+'envoi'+'</b> : '+'msg'+'</div>';
       // On récupère le message
       var coos = document.getElementById('message').value;
       // On appelle l'événement se trouvant sur le serveur pour qu'il enregistre le message et qu'il l'envoie à tous les autres clients connectés (sauf nous)
