@@ -61,7 +61,7 @@
       // On récupère le message
       var coos = document.getElementById('message').value;
       // On appelle l'événement se trouvant sur le serveur pour qu'il enregistre le message et qu'il l'envoie à tous les autres clients connectés (sauf nous)
-      socket.emit('nouveauMessage', { 'id' : id, 'coos' : coos });
+      //socket.emit('nouveauMessage', { 'id' : id, 'coos' : coos });
       // On affiche directement notre message dans notre page
       document.getElementById('tchat').innerHTML += '<div class="line"><b>'+pseudo+'</b> : '+coos+'</div>';
       // On vide le formulaire

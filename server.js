@@ -22,7 +22,7 @@ io.on('connection', function (socket) {
       // On l'ajoute au tableau (variable globale commune à tous les clients connectés au serveur)
       messages[mess.id].coos = mess.coos
       // On envoie à tous les clients connectés (sauf celui qui a appelé l'événement) le nouveau message
-      socket.broadcast.emit('recupererNouveauMessage', {pseudo : messages[mess.id].coos, coos : messages[mess.id].coos});
+      socket.broadcast.emit('recupererNouveauMessage', {'pseudo' : messages[mess.id].coos, 'coos' : messages[mess.id].coos});
   });
 });
 
