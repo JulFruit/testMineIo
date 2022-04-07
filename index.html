@@ -39,8 +39,8 @@
        // On demande le pseudo de l'utilisateur
       var myPseudo = prompt('Votre pseudo ?') || 'Utilisateur';
       var myFood = [];
-      //let socket = io();
-      let socket = io.connect();
+      let socket = io();
+      //let socket = io.connect();
 
       //On crée le nouveau joueur sur le serveur
       socket.emit('newPlayer', myPseudo);
