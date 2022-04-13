@@ -6,14 +6,14 @@ var app = http.createServer(function (req, res) {
 	// On lit notre fichier app.html
 	var t_req =req.url.split('?')[0]
 	if (t_req==='/'){
-	fs.readFile('./Connexion.html', 'utf-8', function(error, content) {
+	fs.readFile('/Connexion.html', 'utf-8', function(error, content) {
 		res.writeHead(200, {'Content-Type' : 'text/html'});
 		res.end(content);
 	});
 }
 if (t_req==='/test'){
 	console.log(players)
-	fs.readFile('./index.html', 'utf-8', function(error, content) {
+	fs.readFile('/index.html', 'utf-8', function(error, content) {
 		res.writeHead(200, {'Content-Type' : 'text/html'});
 		res.end(content);
 })};	
