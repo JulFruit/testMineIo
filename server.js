@@ -95,4 +95,4 @@ io.sockets.on('connection', function (socket) {
 
 // Notre application ecoute sur le port 8080
 app.listen(3000);
-console.log('Live Chat App running at http://localhost:8080/');
+console.log('Live Chat App running ');
