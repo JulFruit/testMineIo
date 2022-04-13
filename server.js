@@ -5,6 +5,7 @@ var fs      =	require('fs');
 var app = http.createServer(function (req, res) {
 	// On lit notre fichier app.html
 	var t_req =req.url.split('?')[0]
+	console.log('coucou ');
 	if (t_req==='/'){
 	res.sendFile('./Connexion.html', { root: __dirname })
 }
@@ -91,4 +92,4 @@ io.sockets.on('connection', function (socket) {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT);
-console.log('Live Chat App running at http://localhost:8080/');
+console.log('Live Chat App running ');
