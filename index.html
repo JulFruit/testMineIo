@@ -37,38 +37,53 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
        // On demande le pseudo de l'utilisateur
-      var pseudo = prompt('Votre pseudo ?') || 'Utilisateur';
-
+      var myPseudo = prompt('Votre pseudo ?') || 'Utilisateur';
+      var myFood = [];
       let socket = io();
-      let el;
+      //let socket = io.connect();
+
+      //On crée le nouveau joueur sur le serveur
+      socket.emit('newPlayer', myPseudo);
+
+
+     // On creer l'evenement recupererInfos pour recuperer direcement les Infos sur serveur
+      socket.on('recupererInfos', function (playersInfos) {
+        // playersInfos est le tableau contenant tous les coos, usernames...
+        var html = '';
+        for (var pseudo in playersInfos){
+          html += '<div class="line"><b>'+pseudo.toString()+'</b> : '+playersInfos[pseudo].position+'</div>';
+        }
+        document.getElementById('tchat').innerHTML = html;
+      });
+
+      socket.on('recupererFoods', function (foods) {
+        myFood = foods;
+      });
+      // Quand on veut envoyer une coo (on a validé le formulaire)
+    function envoiMessage(mess) {
       
+      height = 500;
+      width = 500;
 
-      socket.on('recupererMessages', function (messages) {
-      // messages est le tableau contenant tous les messages qui ont été écris sur le serveur
-      var html = '';
-      var id = messages.length
-      for (var i = 0; i < messages.length; i++)
-        html += '<div class="line"><b>'+messages[i].pseudo+'</b> : '+messages[i].coos+'</div>';
-      document.getElementById('tchat').innerHTML = html;
-      });
+      for (let i=0; i< 20; i++){
+          
+          direction = [Math.floor(Math.random()*height),Math.floor(Math.random()*width)]
+          packet = {"name" : myPseudo, "direction": direction}
+          console.log(packet)
+          socket.emit('newPacket', packet);
 
-      socket.on('recupererNouveauMessage', function (message) {
-      document.getElementById('tchat').innerHTML += '<div class="line"><b>'+message.pseudo+'</b> : '+message.coos+'</div>';
-      });
-      // Quand on veut envoyer un message (on a validé le formulaire)
-      function envoiMessage(mess) {
-      document.getElementById('tchat').innerHTML += '<div class="line"><b>'+'envoi'+'</b> : '+'msg'+'</div>';
-      // On récupère le message
-      var coos = document.getElementById('message').value;
-      // On appelle l'événement se trouvant sur le serveur pour qu'il enregistre le message et qu'il l'envoie à tous les autres clients connectés (sauf nous)
-      //socket.emit('nouveauMessage', { 'id' : id, 'coos' : coos });
-      // On affiche directement notre message dans notre page
-      document.getElementById('tchat').innerHTML += '<div class="line"><b>'+pseudo+'</b> : '+coos+'</div>';
-      // On vide le formulaire
-      document.getElementById('message').value = '';
-      // On retourne false pour ne pas que le formulaire n'actualise la page
-      return false;
       }
+            // On récupère le message
+      var coos = (document.getElementById('message').value).split(",");
+      coos[0] = parseInt(coos[0])
+      coos[1] = parseInt(coos[1])
+      // On appelle l'événement se trouvant sur le serveur pour qu'il enregistre le message et qu'il l'envoie à tous les clients connectés
+      socket.emit('newPacket', { 'name' : myPseudo, 'direction' : coos });
+        // On vide le formulaire
+        document.getElementById('message').value = '';
+        // On retourne false pour ne pas que le formulaire n'actualise la page
+        return false;
+    }
       
     </script>
   </body>
