@@ -1,23 +1,38 @@
-'use strict';
+var http    =	require('http');
+var fs      =	require('fs');
 
-const express = require('express');
-const socketIO = require('socket.io');
+// Creation du serveur
+var app = http.createServer(function (req, res) {
+	// On lit notre fichier app.html
+	var t_req =req.url.split('?')[0]
+	if (t_req==='/'){
+	res.sendFile('./Connexion.html', { root: __dirname })
+}
+if (t_req==='/test'){
+	console.log(players)
+	fs.readFile('./tchat.html', 'utf-8', function(error, content) {
+		res.writeHead(200, {'Content-Type' : 'text/html'});
+		res.end(content);
+})};	
+});
 
-const PORT = process.env.PORT || 3000;
-const INDEX = '/index.html';
-
-const server = express()
-  .use((req, res) => res.sendFile(INDEX, { root: __dirname }))
-  .listen(PORT, () => console.log(`Listening on ${PORT}`));
-
-const io = socketIO(server);
-
-var messages = [];
+// Variables globales
+// Ces variables resteront durant toute la vie du seveur pour et sont commune pour chaque client (node server.js)
+// liste des messages de la forme { pseudo :{ coos:{x:1 , y:2}, size : 231}}
 var players = {};
 foods = [[2,7],[2,0],[0,5]]
+//// SOCKET.IO ////
 
-io.on('connection', function (socket) {
-  	//permet de creer un nouveau joueur
+var io = require('socket.io')(http);
+
+// Socket io ecoute maintenant notre application !
+io = io.listen(app); 
+
+
+// Quand une personne se connecte au serveur
+io.sockets.on('connection', function (socket) {
+
+	//permet de creer un nouveau joueur
 	socket.on('newPlayer', function (pseudo) {
 		players[pseudo] = {"position":[0,0],"size":4};
 		console.log(players);
@@ -28,6 +43,11 @@ io.on('connection', function (socket) {
 	// On donne les foods
 	socket.emit('recupererFoods', foods);
 
+	// login
+	socket.on('Credential', function (cred){
+		console.log(cred.pseudo)
+		console.log(cred.color)
+	});
 	// Quand on reçoit une nouvelle coo
 	socket.on('newPacket', function (packet) {
 		//update position
@@ -64,6 +84,11 @@ io.on('connection', function (socket) {
 		socket.emit('recupererInfos', players);
 		socket.emit('recupererFoods', foods);
 	});
+
+
 });
 
 
+const PORT = process.env.PORT || 3000;
+app.listen(PORT);
+console.log('Live Chat App running at http://localhost:8080/');
