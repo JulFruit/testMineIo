@@ -8,6 +8,7 @@ const INDEX = '/index.html';
 
 const server = express()
   .get('/', (req, res) => res.sendFile('/Connexion.html', { root: __dirname }))
+  .get('/test', (req, res) => res.sendFile('/index.html', { root: __dirname }))
   .listen(PORT, () => console.log(`Listening on ${PORT}`));
 
 const io = socketIO(server);
@@ -26,6 +27,12 @@ io.on('connection', function (socket) {
 	// On donne les foods
 	socket.emit('recupererFoods', foods);
 
+	// login
+	socket.on('Credential', function (cred){
+		console.log(cred.pseudo)
+		console.log(cred.color)
+	});
+	
   // Quand on reçoit une nouvelle coo
 	socket.on('newPacket', function (packet) {
 		//update position
