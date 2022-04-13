@@ -5,6 +5,7 @@ var fs      =	require('fs');
 var app = http.createServer(function (req, res) {
 	// On lit notre fichier app.html
 	var t_req =req.url.split('?')[0]
+	console.log(t_req);
 	if (t_req==='/'){
 	fs.readFile('/Connexion.html', 'utf-8', function(error, content) {
 		res.writeHead(200, {'Content-Type' : 'text/html'});
