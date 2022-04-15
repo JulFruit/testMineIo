@@ -5,11 +5,13 @@ const socketIO = require('socket.io');
 
 const PORT = process.env.PORT || 3000;
 const INDEX = '/index.html';
+const path = require('path');
+
 
 const server = express()
   .use(('/', express.static('/')))
   .get('/', (req, res) => res.sendFile('/Connexion.html', { root: __dirname }))
-  .get('/test', (req, res) => res.sendFile('/game.html', { root: __dirname }))
+  .get('/test', (req, res) => res.sendFile(path.join('', '/game.html')))
   .listen(PORT, () => console.log(`Listening on ${PORT}`));
 
 const io = socketIO(server);
