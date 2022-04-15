@@ -7,7 +7,7 @@ const PORT = process.env.PORT || 3000;
 const INDEX = '/index.html';
 
 const server = express()
-  .use(express.static(__dirname+'/images'))
+  .use(express.static(__dirname))
   .get('/', (req, res) => res.sendFile('/Connexion.html', { root: __dirname }))
   .get('/test', (req, res) => res.sendFile('/index.html', { root: __dirname }))
   .get('/titi', (req, res) => res.sendFile('/Game.html', { root: __dirname }))
