@@ -134,6 +134,7 @@
             let url=window.location.href
             let cred=url.split('?')[1].split('&')
             let myname=cred[0].split('=')[1]
+            let mycolor=cred[1].split('=')[1]
             let playersize=200;
             let foods = [];
             let foodsize = 100; 
@@ -142,7 +143,7 @@
             let h = window.innerHeight;
 
             var socket = io.connect();
-            socket.emit('newPlayer', myname);
+            socket.emit('newPlayer', {'name':myname,'color':mycolor});
 
             // On creer l'evenement recupererInfos pour recuperer direcement les joueurs sur le serveur
             socket.on('recupererInfos', function (playersInfos) {

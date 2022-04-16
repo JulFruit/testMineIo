@@ -20,8 +20,8 @@ const vitesse = (size)=>{}
 
 io.on('connection', function (socket) {
   //permet de creer un nouveau joueur
-	socket.on('newPlayer', function (pseudo) {
-		players[pseudo] = {"position":[0,0],"size":4};
+	socket.on('newPlayer', function (infPlayer) {
+		players[infPlayer['name']] = {"position":[0,0],"size":4,"color":infPlayer['color']};
 		console.log(players);
 	});
   	// On donne les donnée joeurs
