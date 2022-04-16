@@ -169,9 +169,6 @@
                 var y_vect=-(y-h/2)
                 var norm = Math.sqrt(x_vect*x_vect+y_vect*y_vect)
                 x_vect=x_vect/norm
-                // if(x>(w/2) && x_vect<0){
-                //     x_vect=-x_vect
-                // }
                 y_vect=-y_vect/norm
                 // if(y>h/2 && y_vect<0){
                 //     y_vect=-y_vect
@@ -207,7 +204,7 @@
                 };
                 return e(
                     'div', {className:"opponent", style:playerStyle},
-                        e('img',{src:'./images/'+'Ciarletta.png',alt:"Mechant" }),
+                        e('img',{src:'./images/'+players[player]["image"]+'png',alt:"Mechant" }),
                         e('p', {className:"text"}, player)
                 )
             }
