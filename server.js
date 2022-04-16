@@ -9,19 +9,19 @@ const INDEX = '/index.html';
 const server = express()
   .use(express.static(__dirname))
   .get('/', (req, res) => res.sendFile('/Connexion.html', { root: __dirname }))
-  .get('/test', (req, res) => res.sendFile('/index.html', { root: __dirname }))
-  .get('/titi', (req, res) => res.sendFile('/Game.html', { root: __dirname }))
+  .get('/test', (req, res) => res.sendFile('/Game.html', { root: __dirname }))
   .listen(PORT, () => console.log(`Listening on ${PORT}`));
 
 const io = socketIO(server);
 
 var players = {};
 var foods = [[2,7],[2,0],[0,5]];
+const vitesse = (size)=>{}
 
 io.on('connection', function (socket) {
   //permet de creer un nouveau joueur
-	socket.on('newPlayer', function (pseudo) {
-		players[pseudo] = {"position":[0,0],"size":4};
+	socket.on('newPlayer', function (infPlayer) {
+		players[infPlayer['name']] = {"position":[0,0],"size":4,"color":infPlayer['color']};
 		console.log(players);
 	});
   	// On donne les donnée joeurs
@@ -39,15 +39,15 @@ io.on('connection', function (socket) {
 	socket.on('newPacket', function (packet) {
 		//update position
 		console.log(packet);
-		players[packet["name"]]["position"][0] += packet["direction"][0];
-		players[packet["name"]]["position"][1] += packet["direction"][1];
-
+		players[packet["name"]]["position"][0] += packet["direction"][0] * 10/players[packet['name']]["size"];
+		players[packet["name"]]["position"][1] += packet["direction"][1] * 10/players[packet['name']]["size"];
+		console.log(players);
 		//check for food
 		foods.forEach(e =>{
 			if ((Math.sqrt((e[0]-players[packet["name"]]["position"][0])**2 + (e[1]-players[packet["name"]]["position"][1])**2)) > players[packet["name"]]["size"]){
 				foods.pop(e);
 				players[packet["name"]]["size"] += 2;
-				foods.push([Math.round(Math.random()*10),Math.round(Math.random()*10)])
+				//foods.push([Math.round(Math.random()*10),Math.round(Math.random()*10)])
 			}
 		})
 
