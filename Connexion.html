@@ -1,0 +1,75 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Mines.IO</title>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <style type="text/css">
+    body {
+      background-color	:	rgb(50,50,80);
+      color				:	white;
+      text-align			:	center;
+    }
+    #tchat {
+      background-color 	:	white;
+      opacity				:	0.8;
+      width				:	500px;
+      height				:	300px;
+      margin				:	auto;
+      border				:	3px rgb(40,40,40) solid;
+      overflow			:	auto;
+    }
+    .line {
+      border-bottom		:	1px rgb(80,80,80) solid;
+      padding				:	4px;
+      text-align:left;
+      color				:	rgb(40,40,40);
+    }
+    .div-1 {
+        background-color: #ff0000;
+        -moz-border-radius: 10px;
+        -webkit-border-radius: 10px;
+        border-radius: 10px;
+        height: 300px;
+        width: 20%;
+        position: relative;
+        top: 40%;
+        left: 40%;
+    }
+    </style>
+  </head>
+  <body>
+    <h1>Mines.IO</h1>
+    <div class="div-1">
+    <form action="" method="get" class="form-example" onsubmit="return (envoiCredential());">
+      <div class="form-example" style="position: relative; top: 10px;">
+        <label for="pseudo">Enter your pseudo: </label>
+        <input type="text" name="pseudo" id="pseudo" required>
+      </div>
+      <div class="form-example" style="position: relative; top: 40px;">
+        <label for="color">Choose your color: </label>
+        <select name="color" id="color">
+          <option value="vaxou">vaxou</option>
+          <option value="ciarletta">Ciarletta</option>
+          <option value="rousseau">rousseau</option>
+      </select>
+      </div>
+      <div class="form-example" style="position: relative; top: 50px;">
+        <input type="submit" value="Subscribe!">
+      </div>
+    </form>
+  </div>
+
+    <script type="text/javascript">
+    var socket = io.connect();
+
+    function envoiCredential(mess) {
+      // On récupère le message
+      var pseudo = document.getElementById('pseudo').value;
+      var color = document.getElementById('color').value;
+      socket.emit('Credential', {'pseudo' : pseudo,'color' : color, });
+      document.location.href='https://mymineio.herokuapp.com/test?login='+pseudo+'&color='+color; 
+      return false;
+    }
+    </script>
