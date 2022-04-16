@@ -41,7 +41,7 @@ io.on('connection', function (socket) {
 		console.log(packet);
 		players[packet["name"]]["position"][0] += packet["direction"][0] * 10/players[packet['name']]["size"];
 		players[packet["name"]]["position"][1] += packet["direction"][1] * 10/players[packet['name']]["size"];
-
+		console.log(players);
 		//check for food
 		foods.forEach(e =>{
 			if ((Math.sqrt((e[0]-players[packet["name"]]["position"][0])**2 + (e[1]-players[packet["name"]]["position"][1])**2)) > players[packet["name"]]["size"]){
