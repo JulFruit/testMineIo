@@ -1,6 +1,126 @@
 <!DOCTYPE html>
 <html>
-    <head></head>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <style type="text/css">
+            html{
+            margin: 0;
+            padding: 0;
+            height: 98%;
+            width: 98%;
+            }
+
+            body {
+            margin: 0;
+            border: 0;
+            padding: 0;
+            height: 98%;
+            }
+
+            #all_game {
+                height: 100%;
+                width: 100%;
+            }
+            
+            ol, ul {
+            padding-left: 30px;
+            }
+
+            .status {
+            margin-bottom: 10px;
+            }
+
+            .player {
+            width: 80%;
+            height:80%;
+            
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: auto;
+            margin-bottom: auto;
+            }
+
+            .circle {
+            display: flex;
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: 50%;
+            }
+
+
+            .text {
+            font-weight: bold;
+            color: #FFF;
+            position: absolute;
+            top:50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            }
+
+            .square:focus {
+            outline: none;
+            }
+
+            .kbd-navigation .square:focus {
+            background: #ddd;
+            }
+
+            #game {
+            display: flex;
+            flex-direction: row;
+            height: 100%;
+            width: 100%;
+            }
+
+            .parent {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            margin: 10px;
+            overflow: hidden;
+            }
+
+            .food {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            }
+
+            .fooddisplay {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background-color: #ddd;
+            }
+
+            .opponents {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            }
+
+            .opponentsdisplay {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            }
+
+
+            .game-info {
+            margin-left: 20px;
+            }
+
+        </style>
+    </head>
     <body>
         <div id="all_game"></div>
         <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
@@ -10,37 +130,30 @@
 
             const e = React.createElement;
 
-            let players= {
-            "JohnDu54": {
-                "position": [400,300],
-                "size":200,
-                "image":"Ciarletta.png",
-            },
-            "Vaxou": {
-                "position": [1000,500],
-                "size":200,
-                "image":"Vaxou.png",
-            },
-            "Rousseau": {
-                "position": [1400,300],
-                "size":300,
-                "image":"Vaxou.png",
-            }
-            };
-
-            let foods = {
-            "food1": [350,500],
-            "food2": [200,100],
-            "food3": [175,400],
-            "food4": [900,230],
-            "food5": [977,500]};
+            let players= {};
+            let url=window.location.href
+            let cred=url.split('?')[1].split('&')
+            let myname=cred[0].split('=')[1]
+            let playersize=200;
+            let foods = [];
             let foodsize = 100; 
 
-            let playersize=200;
             let w = window.innerWidth;
             let h = window.innerHeight;
-            let myname= "JohnDu54";
 
+            var socket = io.connect();
+            socket.emit('newPlayer', myname);
+
+            // On creer l'evenement recupererInfos pour recuperer direcement les joueurs sur le serveur
+            socket.on('recupererInfos', function (playersInfos) {
+                // playersInfos est le tableau contenant tous les coos, usernames...
+                players=playersInfos
+            });
+
+            //idem avec la nourriture
+            socket.on('recupererFoods', function (foodsInfos) {
+                foods = foodsInfos;
+            });
 
             class Game extends React.Component {
             _onMouseMove(e) {
@@ -53,11 +166,19 @@
             render() {
                 const { x, y } = this.state;
                 var x_vect=x-w/2
-                var y_vect=y-h/2
+                var y_vect=-(y-h/2)
                 var norm = Math.sqrt(x_vect*x_vect+y_vect*y_vect)
                 x_vect=x_vect/norm
+                if(x>(w/2) && x_vect<0){
+                    x_vect=-x_vect
+                }
                 y_vect=-y_vect/norm
-                console.log(x_vect,y_vect)
+                // if(y>h/2 && y_vect<0){
+                //     y_vect=-y_vect
+                // }
+                let direction=[x_vect, y_vect]
+                let packet = {"name" : myname, "direction": direction}
+                socket.emit('newPacket', packet);
                 return e (
                     'div', {className:"parent", onMouseMove:this._onMouseMove.bind(this)},
                         e ('div', {id:"game"}, 
@@ -86,7 +207,7 @@
                 };
                 return e(
                     'div', {className:"opponent", style:playerStyle},
-                        e('img',{src:'./images/'+players[player]["image"],alt:"Mechant" }),
+                        e('img',{src:'./images/'+players[player]["image"]+'png',alt:"Mechant" }),
                         e('p', {className:"text"}, player)
                 )
             }

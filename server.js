@@ -16,7 +16,8 @@ const server = express()
 const io = socketIO(server);
 
 var players = {};
-var foods = [[2,7],[2,0],[0,5]];
+foods = [[2,7],[2,0],[0,5]]
+const vitesse = (size)=>{}
 
 io.on('connection', function (socket) {
   //permet de creer un nouveau joueur
@@ -28,6 +29,7 @@ io.on('connection', function (socket) {
 	socket.emit('recupererInfos', players);
 	// On donne les foods
 	socket.emit('recupererFoods', foods);
+	
 
 	// login
 	socket.on('Credential', function (cred){
@@ -35,19 +37,24 @@ io.on('connection', function (socket) {
 		console.log(cred.color)
 	});
 	
-  // Quand on reçoit une nouvelle coo
+	
+	// Quand on reçoit une nouvelle coo
 	socket.on('newPacket', function (packet) {
 		//update position
 		console.log(packet);
-		players[packet["name"]]["position"][0] += packet["direction"][0];
-		players[packet["name"]]["position"][1] += packet["direction"][1];
+		console.log(players);
+		players[packet["name"]]["position"][0] += packet["direction"][0] * 10/players[packet['name']]["size"];
+		players[packet["name"]]["position"][1] += packet["direction"][1] * 10/players[packet['name']]["size"];
+		console.log(players);
+		console.log("------------------------------------");
 
 		//check for food
 		foods.forEach(e =>{
 			if ((Math.sqrt((e[0]-players[packet["name"]]["position"][0])**2 + (e[1]-players[packet["name"]]["position"][1])**2)) > players[packet["name"]]["size"]){
-				foods.pop(e);
-				players[packet["name"]]["size"] += 2;
-				foods.push([Math.round(Math.random()*10),Math.round(Math.random()*10)])
+				foods.pop(e)
+				console.log(foods);
+				players[packet["name"]]["size"] += 5
+				//foods.push([Math.round(Math.random()*10),Math.round(Math.random()*10)])
 			}
 		})
 
@@ -72,6 +79,3 @@ io.on('connection', function (socket) {
 		socket.emit('recupererFoods', foods);
 	});
 });
-
-
-
