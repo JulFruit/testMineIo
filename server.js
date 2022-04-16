@@ -17,6 +17,7 @@ const io = socketIO(server);
 
 var players = {};
 var foods = [[2,7],[2,0],[0,5]];
+const vitesse = (size)=>{}
 
 io.on('connection', function (socket) {
   //permet de creer un nouveau joueur
@@ -39,8 +40,8 @@ io.on('connection', function (socket) {
 	socket.on('newPacket', function (packet) {
 		//update position
 		console.log(packet);
-		players[packet["name"]]["position"][0] += packet["direction"][0];
-		players[packet["name"]]["position"][1] += packet["direction"][1];
+		players[packet["name"]]["position"][0] += packet["direction"][0] * 10/players[packet['name']]["size"];
+		players[packet["name"]]["position"][1] += packet["direction"][1] * 10/players[packet['name']]["size"];
 
 		//check for food
 		foods.forEach(e =>{
