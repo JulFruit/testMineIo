@@ -190,7 +190,11 @@
 
             class Opponents extends React.Component {
             renderPlayer(player) {
-                let scale = players[player]["size"]/players[myname]["size"];
+                let mysize = players[myname]["size"]
+                let othersize = players[player]["size"]
+                let mypos = players[myname]["position"]
+                let otherpos = players[player]["position"]
+                let scale = playersize/mysize;
                 const playerStyle = {
                 display: "flex",
                 margin_left: "auto",
@@ -198,11 +202,10 @@
                 margin_top: "auto",
                 margin_bottom: "auto",
                 position:"absolute", 
-                left: w/2 + players[player]["position"][0] - players[myname]["position"][0] - 200*scale/2,
-                top: h/2 + players[player]["position"][1] - players[myname]["position"][1]- 200*scale/2, 
-                width: playersize*scale, 
-                height: playersize*scale,
-                
+                left: w/2 + scale*(otherpos[0] - mypos[0]) - othersize*scale/2,
+                top: h/2 + scale*(otherpos[1] - mypos[1])- othersize*scale/2, 
+                width: othersize*scale, 
+                height: othersize*scale,
                 };
                 return e(
                     'div', {className:"opponent", style:playerStyle},
@@ -220,7 +223,10 @@
 
             class Food extends React.Component {
             renderFood(food) {
-                let scale = foodsize/players[myname]["size"];
+                let mysize = players[myname]["size"]
+                let mypos = players[myname]["position"]
+                let foodpos = foods[food]
+                let scale = playersize/mysize;;
                 const foodStyle = {
                 display: "flex",
                 margin_left: "auto",
@@ -228,15 +234,15 @@
                 margin_top: "auto",
                 margin_bottom: "auto",
                 position:"absolute", 
-                left: w/2 + foods[food][0] - players[myname]["position"][0] - 200*scale/2,
-                top: h/2 + foods[food][1] - players[myname]["position"][1]- 200*scale/2, 
+                left: w/2 + scale*(foodpos[0]-mypos[0]) - foodsize*scale/2,
+                top: h/2 + scale*(foodpos[1]-mypos[1]) - foodsize*scale/2, 
                 width: foodsize*scale, 
                 height: foodsize*scale,
                 background_color: "blue",
                 };
                 return e(
                     'div', {className:"food", style:foodStyle},
-                        e('img',{src:'./images/'+'Ciarletta.png',alt:"Mechant" })
+                        e('img',{src:'./images/'+'artem.png',alt:"Mechant" })
                 )
             };
             render() {
