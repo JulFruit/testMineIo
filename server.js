@@ -70,7 +70,6 @@ io.on('connection', function (socket) {
 			}
 		}
 
-		console.log(foods);
 		// On envoie à tous les clients connectés 
 		socket.emit('recupererInfos', players);
 		socket.emit('recupererFoods', foods);
