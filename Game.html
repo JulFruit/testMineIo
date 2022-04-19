@@ -226,7 +226,7 @@
             renderFood(food) {
                 let mysize = players[myname]["size"]
                 let mypos = players[myname]["position"]
-                let foodpos = foods[food]
+                let foodpos = food
                 let scale = playersize/mysize;;
                 const foodStyle = {
                 display: "flex",
@@ -248,7 +248,7 @@
             };
             render() {
                 return e(
-                    'div',{className:"fooddisplay"},Object.keys(foods).map(this.renderFood)
+                    'div',{className:"fooddisplay"},foods.map(this.renderFood)
                 );
             };
             }
