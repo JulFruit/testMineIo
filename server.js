@@ -15,17 +15,13 @@ const server = express()
 const io = socketIO(server);
 
 var players = {};
-var size = [10000,5000];
-foods = []
-for (var i = 0; i <1000; i++) {
-	foods.push([Math.round(Math.random()*size[0]),Math.round(Math.random()*size[1])])
-}
+var foods = [[2,7],[2,0],[0,5]];
 const vitesse = (size)=>{}
 
 io.on('connection', function (socket) {
   //permet de creer un nouveau joueur
 	socket.on('newPlayer', function (infPlayer) {
-		players[infPlayer['name']] = {"position":[0,0],"size":100,"color":infPlayer['color']};
+		players[infPlayer['name']] = {"position":[0,0],"size":4,"color":infPlayer['color']};
 		console.log(players);
 	});
   	// On donne les donnée joeurs
