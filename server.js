@@ -47,7 +47,8 @@ io.on('connection', function (socket) {
 			if ((Math.sqrt((e[0]-players[packet["name"]]["position"][0])**2 + (e[1]-players[packet["name"]]["position"][1])**2)) > players[packet["name"]]["size"]){
 				foods.pop(e);
 				players[packet["name"]]["size"] += 2;
-				//foods.push([Math.round(Math.random()*10),Math.round(Math.random()*10)])
+				foods.push([Math.round(Math.random()*100),Math.round(Math.random()*100)])
+				console.log(foods);
 			}
 		})
 
