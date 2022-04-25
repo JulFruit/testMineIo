@@ -28,6 +28,7 @@ io.on('connection', function (socket) {
 	socket.emit('recupererInfos', players);
 	// On donne les foods
 	socket.emit('recupererFoods', foods);
+	console.log(foods);
 
 	// login
 	socket.on('Credential', function (cred){
@@ -48,7 +49,6 @@ io.on('connection', function (socket) {
 				foods.pop(e);
 				players[packet["name"]]["size"] += 2;
 				foods.push([Math.round(Math.random()*100),Math.round(Math.random()*100)])
-				console.log(foods);
 			}
 		})
 
