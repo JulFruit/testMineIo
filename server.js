@@ -28,7 +28,6 @@ io.on('connection', function (socket) {
 	socket.emit('recupererInfos', players);
 	// On donne les foods
 	socket.emit('recupererFoods', foods);
-	console.log(foods);
 
 	// login
 	socket.on('Credential', function (cred){
@@ -38,6 +37,7 @@ io.on('connection', function (socket) {
 	
   // Quand on reçoit une nouvelle coo
 	socket.on('newPacket', function (packet) {
+		console.log(foods);
 		//update position
 		console.log(packet);
 		players[packet["name"]]["position"][0] += packet["direction"][0] * 10/players[packet['name']]["size"];
