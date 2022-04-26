@@ -15,7 +15,13 @@ const server = express()
 const io = socketIO(server);
 
 var players = {};
-var foods = [[-10,10],[0,10],[0,-10]];
+var foods = [];
+
+let size = 200;
+for (let i; i<1000; i++){
+	foods.push([Math.floor(Math.random()*size-size/2),Math.floor(Math.random()*size-size/2)]);
+}
+console.log(foods);
 const vitesse = (size)=>{}
 
 io.on('connection', function (socket) {
@@ -48,17 +54,18 @@ io.on('connection', function (socket) {
 		foods.forEach(e =>{
 			if ((Math.sqrt((e[0]-players[packet["name"]]["position"][0])**2 + (e[1]-players[packet["name"]]["position"][1])**2)) < players[packet["name"]]["size"]){
 				foods.pop(e);
+				foods.push([Math.floor(Math.random()*size-size/2),Math.floor(Math.random()*size-size/2)]);
 				players[packet["name"]]["size"] += 1;
 				
-				//foods.push([Math.round(Math.random()*100),Math.round(Math.random()*100)])
 			}
 		})
 
 		//check for collision
 		for (var player in players){
 			if (player != packet["name"]){
-				if ((Math.sqrt((players[player]["position"][0]-players[packet["name"]]["position"][0])**2 + (players[player]["position"][1]-players[packet["name"]]["position"][1])**2)) < players[packet["name"]]["size"]){
+				if ((Math.sqrt((players[player]["position"][0]-players[packet["name"]]["position"][0])**2 + (players[player]["position"][1]-players[packet["name"]]["position"][1])**2)) < (players[packet["name"]]["size"] + players[player]["size"])){
 					if (players[packet["name"]]["size"] > players[player]["size"]){
+						console.log(players[player] + "is dead")
 						//players[packet["name"]]["size"] += players[player]["size"];
 						//delete players[player];
 					}else{
