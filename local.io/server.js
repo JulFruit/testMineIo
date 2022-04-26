@@ -15,7 +15,7 @@ const server = express()
 const io = socketIO(server);
 
 var players = {};
-var foods = [[-5,5],[5,-5],[0,-5]];
+var foods = [[-10,10],[0,10],[0,-10]];
 const vitesse = (size)=>{}
 
 io.on('connection', function (socket) {
@@ -38,17 +38,19 @@ io.on('connection', function (socket) {
     // Quand on reçoit une nouvelle coo
 	socket.on('newPacket', function (packet) {
 		//update position
-		console.log(packet);
-		console.log(players);
+		// console.log(foods)
+		// console.log(packet);
+		// console.log(players);
 		players[packet["name"]]["position"][0] += packet["direction"][0] * 0.01/players[packet['name']]["size"];
 		players[packet["name"]]["position"][1] += packet["direction"][1] * 0.01/players[packet['name']]["size"];
-		console.log(players);
+		//console.log(players);
 		//check for food
 		foods.forEach(e =>{
-			if ((Math.sqrt((e[0]-players[packet["name"]]["position"][0])**2 + (e[1]-players[packet["name"]]["position"][1])**2)) > players[packet["name"]]["size"]){
+			if ((Math.sqrt((e[0]-players[packet["name"]]["position"][0])**2 + (e[1]-players[packet["name"]]["position"][1])**2)) < players[packet["name"]]["size"]){
 				foods.pop(e);
-				players[packet["name"]]["size"] += 2;
-				//foods.push([Math.round(Math.random()*10),Math.round(Math.random()*10)])
+				players[packet["name"]]["size"] += 1;
+				
+				//foods.push([Math.round(Math.random()*100),Math.round(Math.random()*100)])
 			}
 		})
 
@@ -57,10 +59,10 @@ io.on('connection', function (socket) {
 			if (player != packet["name"]){
 				if ((Math.sqrt((players[player]["position"][0]-players[packet["name"]]["position"][0])**2 + (players[player]["position"][1]-players[packet["name"]]["position"][1])**2)) < players[packet["name"]]["size"]){
 					if (players[packet["name"]]["size"] > players[player]["size"]){
-						players[packet["name"]]["size"] += players[player]["size"];
+						//players[packet["name"]]["size"] += players[player]["size"];
 						//delete players[player];
 					}else{
-						players[player]["size"] += players[packet["name"]]["size"];
+						//players[player]["size"] += players[packet["name"]]["size"];
 						//delete players[packet["name"]];
 					}
 				}
