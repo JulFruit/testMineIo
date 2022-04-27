@@ -15,12 +15,13 @@ const server = express()
 const io = socketIO(server);
 
 var players = {};
-var foods = [];
+var foods = [[5,5],[5,-5]];
 
 let size = 200;
-for (let i; i<1000; i++){
-	foods.push([Math.floor(Math.random()*size-size/2),Math.floor(Math.random()*size-size/2)]);
-}
+// for(let i=0; i<10; i++){
+// 	console.log(i);
+// 	foods.push([Math.floor(Math.random()*size-size/2),Math.floor(Math.random()*size-size/2)]);
+// }
 console.log(foods);
 const vitesse = (size)=>{}
 
@@ -44,15 +45,15 @@ io.on('connection', function (socket) {
     // Quand on reçoit une nouvelle coo
 	socket.on('newPacket', function (packet) {
 		//update position
-		// console.log(foods)
+		console.log(foods)
 		// console.log(packet);
-		// console.log(players);
+		console.log(players);
 		players[packet["name"]]["position"][0] += packet["direction"][0] * 0.01/players[packet['name']]["size"];
 		players[packet["name"]]["position"][1] += packet["direction"][1] * 0.01/players[packet['name']]["size"];
 		//console.log(players);
 		//check for food
 		foods.forEach(e =>{
-			if ((Math.sqrt((e[0]-players[packet["name"]]["position"][0])**2 + (e[1]-players[packet["name"]]["position"][1])**2)) < players[packet["name"]]["size"]){
+			if ((Math.sqrt((e[0]-players[packet["name"]]["position"][0])**2 + (e[1]-players[packet["name"]]["position"][1])**2)) < players[packet["name"]]["size"]/2){
 				foods.pop(e);
 				foods.push([Math.floor(Math.random()*size-size/2),Math.floor(Math.random()*size-size/2)]);
 				players[packet["name"]]["size"] += 1;
@@ -63,7 +64,7 @@ io.on('connection', function (socket) {
 		//check for collision
 		for (var player in players){
 			if (player != packet["name"]){
-				if ((Math.sqrt((players[player]["position"][0]-players[packet["name"]]["position"][0])**2 + (players[player]["position"][1]-players[packet["name"]]["position"][1])**2)) < (players[packet["name"]]["size"] + players[player]["size"])){
+				if ((Math.sqrt((players[player]["position"][0]-players[packet["name"]]["position"][0])**2 + (players[player]["position"][1]-players[packet["name"]]["position"][1])**2)) < (players[packet["name"]]["size"]/2 + players[player]["size"]/2)){
 					if (players[packet["name"]]["size"] > players[player]["size"]){
 						console.log(players[player] + "is dead")
 						//players[packet["name"]]["size"] += players[player]["size"];
