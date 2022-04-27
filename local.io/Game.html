@@ -75,6 +75,16 @@
             width: 100%;
             }
 
+            #mousepos {
+            position: absolute;
+            top : 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            z-index: 2;
+            }
+
+
             .parent {
             position: relative;
             width: 100%;
@@ -152,8 +162,13 @@
             socket.on('recupererInfos', function (playersInfos) {
                 // playersInfos est le tableau contenant tous les coos, usernames...
                 players=playersInfos
+                ReactDOM.render(e(Game), domContainer);
             });
 
+            socket.on('death', function (req) {
+                document.location.href = 'http://localhost:3000/death?login='+myname+'&color='+mycolor
+            });
+            
             socket.on('sendPacket',function(){
                 socket.emit('newPacket', packet);
             });
@@ -186,11 +201,13 @@
 
                 
                 return e (
-                    'div', {className:"parent", onMouseMove:this._onMouseMove.bind(this)},
+                    'div', {className:"parent"},
                         e ('div', {id:"game"}, 
                             e('div', {className:"opponents"}, e(Opponents))
                         ),
-                        e( 'div', {className:"food"}, e(Food))
+                        e( 'div', {className:"food"}, e(Food)
+                        ),
+                        e ('div', {id:"mousepos", onMouseMove:this._onMouseMove.bind(this)})
                 );
             }
             }

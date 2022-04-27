@@ -1,3 +1,4 @@
+
 'use strict';
 
 const express = require('express');
@@ -71,6 +72,3 @@ io.on('connection', function (socket) {
 		socket.emit('recupererFoods', foods);
 	});
 });
-
-
-
