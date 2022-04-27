@@ -2,15 +2,61 @@
 
 const express = require('express');
 const socketIO = require('socket.io');
+const fileSystem = require('fs')
+const utils = require('./utils.js')
 
 const PORT = process.env.PORT || 3000;
 const INDEX = '/index.html';
 
 const server = express()
   .use(express.static(__dirname))
+  .use(express.json())
   .get('/', (req, res) => res.sendFile('/Connexion.html', { root: __dirname }))
   .get('/test', (req, res) => res.sendFile('/Game.html', { root: __dirname }))
   .get('/death', (req, res) => res.sendFile('/GameOver.html', { root: __dirname }))
+
+  // --- API ---
+  .get('/api', (req, res) => res.sendFile('/docs.html', { root: __dirname }))
+  .get('/leaderboard', (req,res) => {
+	// Renvoie le leaderboard
+	  utils.update_leaderboard(players)
+	  fileSystem.readFile('./leaderboard.json', 'utf8', (err, data) => {
+		res.set('Content-Type', 'application/json');  
+		res.status(200).json(JSON.parse(data))
+	  })
+  })
+  .get('/users', (req,res) => {
+	// Renvoie la liste des joueurs
+	res.status(200).json(players)
+  })
+  .get('/users/:name', (req,res) => {
+	// Renvoie la liste des joueurs
+	res.status(200).json(players[req.params.name])
+  })
+  .post('/users', (req,res) => {
+	// Ajoute un joueur et renvoie la nouvelle liste des joueurs
+	let name = Object.entries(req.body)[0][0]
+	let prop = Object.entries(req.body)[0][1]
+	players[name] = prop
+	console.log("New player " + JSON.stringify(req.body) + " created successfully!")
+	res.status(200).json(players)
+  })
+  .put('/users/:name', (req,res) => {
+	// Modifie les propriétés d'un joueur et renvoie le joueur modifié
+	let name = req.params.name
+	players[name]["position"] = req.body.position
+	players[name]["size"] = req.body.size
+	players[name]["color"] = req.body.color
+	console.log("Player " + name + " modified successfully!")
+	res.status(200).json(players[name])
+  })
+  .delete('/users/:name', (req,res) => {
+	// Supprime un joueur et renvoie la nouvelle liste des joueurs
+	let name = req.params.name
+	delete players[name]
+	console.log("Player " + name + " deleted successfully!")
+	res.status(200).json(players)
+  })
   .listen(PORT, () => console.log(`Listening on ${PORT}`));
 
 const io = socketIO(server);
