@@ -79,7 +79,7 @@ io.on('connection', function (socket) {
 				}
 				}
 			}
-		}
+		
 
 		// On envoie à tous les clients connectés 
 		socket.emit('recupererInfos', players);
