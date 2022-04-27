@@ -22,7 +22,8 @@ const vitesse = (size)=>{}
 io.on('connection', function (socket) {
   //permet de creer un nouveau joueur
 	socket.on('newPlayer', function (infPlayer) {
-		players[infPlayer['name']] = {"position":[0,0],"size":4,"color":infPlayer['color']};
+		players[infPlayer['name']] = {"position":[0,0],"size":4,"color":infPlayer['color'],"time":new Date()}
+		//CODE
 		console.log(players);
 	});
   	// On donne les donnée joeurs
@@ -39,9 +40,15 @@ io.on('connection', function (socket) {
   // Quand on reçoit une nouvelle coo
 	socket.on('newPacket', function (packet) {
 		//update position
+		var prev_time=players[packet["name"]]["time"]
+		players[packet["name"]]["time"]=new Date()
+		var delta_t=players[packet["name"]]["time"]-prev_time
 		console.log(packet);
-		players[packet["name"]]["position"][0] += packet["direction"][0] * 10/players[packet['name']]["size"];
-		players[packet["name"]]["position"][1] += packet["direction"][1] * 10/players[packet['name']]["size"];
+		console.log(delta_t);
+		// players[packet["name"]]["position"][0] += packet["direction"][0] * 10/players[packet['name']]["size"];
+		// players[packet["name"]]["position"][1] += packet["direction"][1] * 10/players[packet['name']]["size"];
+		players[packet["name"]]["position"][0] += packet["direction"][0] * 10*delta_t/1000;
+		players[packet["name"]]["position"][1] += packet["direction"][1] * 10*delta_t/1000;
 		console.log(players);
 		//check for food
 		foods.forEach(e =>{
