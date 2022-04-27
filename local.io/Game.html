@@ -162,6 +162,7 @@
             socket.on('recupererInfos', function (playersInfos) {
                 // playersInfos est le tableau contenant tous les coos, usernames...
                 players=playersInfos
+                ReactDOM.render(e(Game), domContainer);
             });
 
             socket.on('death', function (req) {
