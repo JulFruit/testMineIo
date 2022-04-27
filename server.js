@@ -10,6 +10,7 @@ const server = express()
   .use(express.static(__dirname))
   .get('/', (req, res) => res.sendFile('/Connexion.html', { root: __dirname }))
   .get('/test', (req, res) => res.sendFile('/Game.html', { root: __dirname }))
+  .get('/death', (req, res) => res.sendFile('/Gameover.html', { root: __dirname }))
   .listen(PORT, () => console.log(`Listening on ${PORT}`));
 
 const io = socketIO(server);
@@ -55,11 +56,9 @@ io.on('connection', function (socket) {
 		for (var player in players){
 			if (player != packet["name"]){
 				if ((Math.sqrt((players[player]["position"][0]-players[packet["name"]]["position"][0])**2 + (players[player]["position"][1]-players[packet["name"]]["position"][1])**2)) < players[packet["name"]]["size"]){
-					if (players[packet["name"]]["size"] > players[player]["size"]){
-						players[packet["name"]]["size"] += players[player]["size"];
-						delete players[player];
-					}else{
-						players[player]["size"] += players[packet["name"]]["size"];
+					if (players[packet["name"]]["size"] <= players[player]["size"]){
+						players[player]["size"]+=players[packet["name"]]["size"];
+						socket.emit('death',"req");
 						delete players[packet["name"]];
 					}
 				}
