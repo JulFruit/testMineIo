@@ -152,10 +152,6 @@
                 players=playersInfos
             });
 
-            socket.on('death', function (req) {
-                document.location.href = 'http://localhost:3000/death?login='+myname+'&color='+mycolor
-            });
-
             //idem avec la nourriture
             socket.on('recupererFoods', function (foodsInfos) {
                 foods = foodsInfos;
