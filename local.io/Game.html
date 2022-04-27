@@ -148,7 +148,7 @@
             let mycolor=cred[1].split('=')[1]
             let playersize=200;
             let foods = [];
-            let foodsize = 1; 
+            let foodsize = 10; 
             let packet = {"name" : myname, "direction": [0,0]}
 
             let w = window.innerWidth;
@@ -251,7 +251,7 @@
                 let mysize = players[myname]["size"]
                 let mypos = players[myname]["position"]
                 let foodpos = food
-                let scale = playersize/mysize;;
+                let scale = playersize/mysize;
                 const foodStyle = {
                 display: "flex",
                 margin_left: "auto",
@@ -271,8 +271,11 @@
                 )
             };
             render() {
+                let mypos = players[myname]["position"]
+                let mysize = players[myname]["size"]
+                let scale = mysize/playersize;
                 return e(
-                    'div',{className:"fooddisplay"},foods.map(this.renderFood)
+                    'div',{className:"fooddisplay"},foods.filter(item => ( Math.abs(item[0]-mypos[0])<w/2*scale+foodsize && Math.abs(item[1]-mypos[1])<h/2*scale+foodsize )).map(this.renderFood)
                 );
             };
             }
