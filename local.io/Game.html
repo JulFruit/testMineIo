@@ -4,6 +4,42 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <script type="text/javascript" src="/socket.io/socket.io.js"></script>
         <script src="/socket.io/socket.io.js"></script>
+        <script>
+            const update_leaderboard = (players) => {
+                let sizeArr = []
+                let res = {}
+                res["players"] = []
+
+                for (const [key, value] of Object.entries(players)) {
+                    sizeArr.push([key, value["size"]])
+                }
+
+                // Tri des joueurs selon leur taille décroissante
+                sizeArr.sort((a,b) => {
+                    let size_a = a[1]
+                    let size_b = b[1]
+                    if (size_a > size_b) {
+                        return -1
+                    }
+                    if (size_a < size_b) {
+                        return 1
+                    }
+                    return 0
+                })
+
+                // On ne retient que les 5 premiers
+                let end = 5
+                if (sizeArr.length<5)
+                    end = sizeArr.length
+                for(let i=0;i<end;i++){
+                    let username = sizeArr[i][0]
+                    let size = sizeArr[i][1]
+                    res["players"].push({"username":username, "size": size})
+                }
+
+                return res
+            }
+        </script>
         <style type="text/css">
             html{
             margin: 0;
@@ -87,6 +123,8 @@
 
             .parent {
             position: relative;
+            display: flex;
+            flex-direction: row;
             width: 100%;
             height: 100%;
             margin: 10px;
@@ -127,6 +165,7 @@
 
 
             .game-info {
+            display: flex;
             margin-left: 20px;
             }
 
@@ -204,9 +243,10 @@
                     'div', {className:"parent"},
                         e ('div', {id:"game"}, 
                             e('div', {className:"opponents"}, e(Opponents))
+                            
                         ),
-                        e( 'div', {className:"food"}, e(Food)
-                        ),
+                        e('div', {className:"game-info"}, e(Leaderboard)),
+                        e( 'div', {className:"food"}, e(Food)),
                         e ('div', {id:"mousepos", onMouseMove:this._onMouseMove.bind(this)})
                 );
             }
@@ -278,6 +318,19 @@
                     'div',{className:"fooddisplay"},foods.filter(item => ( Math.abs(item[0]-mypos[0])<w/2*scale+foodsize && Math.abs(item[1]-mypos[1])<h/2*scale+foodsize )).map(this.renderFood)
                 );
             };
+            }
+
+            class Leaderboard extends React.Component {
+                renderTopPlayer(player) {
+                    return e( 
+                        'li', {className:"topplayer"},player["username"]+'\t'+Math.round(player["size"]) )
+                }
+                render() {
+                    let leaderboard = update_leaderboard(players)
+                    return e(
+                        'div', {className:"leaderboard"}, leaderboard["players"].map(this.renderTopPlayer)
+                    )
+                }
             }
 
             const domContainer = document.querySelector('#all_game');
