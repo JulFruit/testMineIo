@@ -11,7 +11,7 @@ const INDEX = '/index.html';
 const server = express()
   .use(express.static(__dirname))
   .use(express.json())
-  .get('/', (req, res) => res.sendFile('/Connexion.html', { root: __dirname }))
+  .get('/', (req, res) => res.sendFile('/login.html', { root: __dirname }))
   .get('/test', (req, res) => res.sendFile('/Game.html', { root: __dirname }))
   .get('/death', (req, res) => res.sendFile('/GameOver.html', { root: __dirname }))
 
